@@ -2,10 +2,15 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.mock.InMemoryMealRepositoryImpl;
+import ru.javawebinar.topjava.to.MealWithExceed;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -13,34 +18,57 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Objects;
+
+import static java.lang.System.out;
+import static ru.javawebinar.topjava.util.DateTimeUtil.*;
+import static ru.javawebinar.topjava.web.SecurityUtil.*;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
-    private MealRepository repository;
+    private MealRestController repository;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        repository = new InMemoryMealRepositoryImpl();
+        ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        repository = appCtx.getBean(MealRestController.class);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
+        String action = request.getParameter("action");
 
-        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
+        if (action == null){
+            Meal meal = new Meal(id == null || id.isEmpty() ? null : getId(request),
+                    LocalDateTime.parse(request.getParameter("dateTime")),
+                    request.getParameter("description"),
+                    Integer.parseInt(request.getParameter("calories")));
 
-        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        repository.save(meal);
-        response.sendRedirect("meals");
+            log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+            if (meal.isNew())
+                repository.create(meal);
+            else repository.update(meal, meal.getId());
+        }
+
+        if ("filter".equals(request.getParameter("action"))){
+            LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
+            LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
+            LocalTime startTime = parseLocalTime(request.getParameter("startTime"));
+            LocalTime endTime = parseLocalTime(request.getParameter("endTime"));
+            List<MealWithExceed> betweenDateTime = repository.getBetweenDateTime(startDate, endDate, startTime, endTime);
+            request.setAttribute("meals", betweenDateTime);
+        }
+//        response.sendRedirect("meals");
+        request.getRequestDispatcher("/meals.jsp").forward(request, response);
     }
 
     @Override
@@ -66,7 +94,7 @@ public class MealServlet extends HttpServlet {
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        MealsUtil.getWithExceeded(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        repository.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

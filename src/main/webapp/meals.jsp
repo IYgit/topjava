@@ -6,6 +6,7 @@
 <html>
 <head>
     <title>Meal list</title>
+    <link rel="stylesheet" href="css/style.css">
     <style>
         .normal {
             color: green;
@@ -20,8 +21,31 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <h2>Meals</h2>
+
+<%-- Date filtering--%>
+    <form method="post" action="meals?action=filter">
+        <dl>
+            <dt>From Date:</dt>
+            <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
+        </dl>
+        <dl>
+            <dt>To Date:</dt>
+            <dd><input type="date" name="endDate" value="${param.startDate}"></dd>
+        </dl>
+        <dl>
+            <dt>From Time:</dt>
+            <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
+        </dl>
+        <dl>
+            <dt>To Time:</dt>
+            <dd><input type="time" name="endTime" value="${param.startTime}"></dd>
+        </dl>
+        <button type="submit">Filter</button>
+    </form>
+
     <a href="meals?action=create">Add Meal</a>
     <hr/>
+<%-- meal table--%>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
