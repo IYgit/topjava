@@ -16,7 +16,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 import static ru.javawebinar.topjava.web.user.ProfileRestController.REST_URL;
 
 class ProfileRestControllerTest extends AbstractControllerTest {
-webPro
+
     @Test
     void testGet() throws Exception {
         TestUtil.print(
