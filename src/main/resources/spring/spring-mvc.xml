@@ -9,9 +9,11 @@
 
     <mvc:annotation-driven>
         <mvc:message-converters>
+            <!-- бін для читання і запису JSON даних -->
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="objectMapper" ref="objectMapper"/>
             </bean>
+            <!-- бін для читання і запису String даних-->
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">
                 <property name="supportedMediaTypes">
                     <list>

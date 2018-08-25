@@ -53,8 +53,8 @@ class AdminRestControllerTest extends AbstractControllerTest {
         updated.setName("UpdatedName");
         updated.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
         mockMvc.perform(put(REST_URL + USER_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
+                .contentType(MediaType.APPLICATION_JSON) // задання заголовку Content-Type
+                .content(JsonUtil.writeValue(updated)))  // задання тіла запиту
                 .andExpect(status().isOk());
 
         assertMatch(userService.get(USER_ID), updated);
@@ -64,10 +64,10 @@ class AdminRestControllerTest extends AbstractControllerTest {
     void testCreate() throws Exception {
         User expected = new User(null, "New", "new@gmail.com", "newPass", Role.ROLE_USER, Role.ROLE_ADMIN);
         ResultActions action = mockMvc.perform(post(REST_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(expected)))
-                .andExpect(status().isCreated());
-
+                .contentType(MediaType.APPLICATION_JSON)        // задання заголовку Content-Type
+                .content(JsonUtil.writeValue(expected)))        // задання тіла запиту
+                .andExpect(status().isCreated());               // перевірка статусу
+        // convert ResultActions to User
         User returned = TestUtil.readFromJson(action, User.class);
         expected.setId(returned.getId());
 

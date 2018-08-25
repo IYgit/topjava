@@ -31,6 +31,7 @@ public class UserTestData {
     }
 
     public static ResultMatcher contentJson(User... expected) {
+        // writeIgnoreProps(Collection c, Sting ignoreProperties) - здійснює json серіалізацію, ігноруючи вказані поля
         return content().json(writeIgnoreProps(Arrays.asList(expected), "registered"));
     }
 
