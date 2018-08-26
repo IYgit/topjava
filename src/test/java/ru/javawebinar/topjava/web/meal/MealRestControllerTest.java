@@ -86,7 +86,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
 
 
     @Test
-    public void testFilter() throws Exception {
+    public void testBetween() throws Exception {
         final ResultMatcher jsonArray = contentJsonArray(
                 MealsUtil.createWithExceed(MEAL4, true),
                 MealsUtil.createWithExceed(MEAL1, false));
