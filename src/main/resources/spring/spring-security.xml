@@ -4,11 +4,14 @@
              xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
+    <!-- відключення spring security для папки /resources -->
     <http pattern="/resources/**" security="none"/>
     <http pattern="/webjars/**" security="none"/>
 
+    <!-- use-expressions="true" - дозвіл використовувати вирази типу: hasRole('ROLE_ADMIN')-->
     <http pattern="/rest/**" use-expressions="true" name="restSecurityFilterChain" create-session="stateless">
-        <http-basic/>
+        <http-basic/> <!-- базова авторизація (можна подивитися в браузері: Network -> Request Headers: Authorization -->
+        <!-- перехоплення url -->
         <intercept-url pattern="/rest/admin/**" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>
         <csrf disabled="true"/>
@@ -16,6 +19,7 @@
 
     <beans:bean name="noopEncoder" class="org.springframework.security.crypto.password.NoOpPasswordEncoder"/>
 
+    <!--сервіс аутентифікації -->
     <authentication-manager>
         <authentication-provider>
             <password-encoder ref="noopEncoder"/>
