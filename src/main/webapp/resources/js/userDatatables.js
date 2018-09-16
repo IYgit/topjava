@@ -1,5 +1,5 @@
-var ajaxUrl = "ajax/admin/users/";
-var datatableApi;
+const ajaxUrl = "ajax/admin/users/";
+let datatableApi;
 
 // $(document).ready(function () {
 $(function () {

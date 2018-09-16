@@ -12,8 +12,7 @@
 
 <div class="jumbotron pt-4">
     <div class="container">
-        <h3><spring:message code="user.title"/></h3>
-        <br/>
+        <h3 class="text-center"><spring:message code="user.title"/></h3>
         <button class="btn btn-primary" onclick="add()">
             <span class="fa fa-plus"></span>
             <spring:message code="common.add"/>
