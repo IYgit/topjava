@@ -31,6 +31,7 @@ public class AdminAjaxController extends AbstractUserController {
 
     @Override
     @DeleteMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") int id) {
         super.delete(id);
     }
@@ -59,6 +60,7 @@ public class AdminAjaxController extends AbstractUserController {
 
     @Override
     @PostMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void enable(@PathVariable("id") int id, @RequestParam("enabled") boolean enabled) {
         super.enable(id, enabled);
     }

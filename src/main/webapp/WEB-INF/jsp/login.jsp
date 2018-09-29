@@ -8,7 +8,7 @@
 <nav class="navbar navbar-dark bg-dark">
     <div class="container">
         <div class="navbar-brand"><img src="resources/images/icon-meal.png"> <spring:message code="app.title"/></div>
-        <form class="form-inline my-2" action="spring_security_check" method="post">
+        <form class="form-inline my-2" id="login_form" action="spring_security_check" method="post">
             <input class="form-control mr-1" type="text" placeholder="Email" name="username">
             <input class="form-control mr-1" type="password" placeholder="Password" name="password">
             <button class="btn btn-success" type="submit">
@@ -28,10 +28,10 @@
         </c:if>
         <br/>
         <p>
-            <button type="submit" class="btn btn-lg btn-primary" onclick="setCredentials('user@yandex.ru', 'password')">
+            <button type="submit" class="btn btn-lg btn-primary" onclick="login('user@yandex.ru', 'password')">
                 <spring:message code="app.login"/> User
             </button>
-            <button type="submit" class="btn btn-lg btn-primary" onclick="setCredentials('admin@gmail.com', 'admin')">
+            <button type="submit" class="btn btn-lg btn-primary" onclick="login('admin@gmail.com', 'admin')">
                 <spring:message code="app.login"/> Admin
             </button>
         </p>
@@ -73,6 +73,10 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 <script type="text/javascript">
+    function login(username, password) {
+        setCredentials(username, password);
+        $("#login_form").submit();
+    }
     function setCredentials(username, password) {
         $('input[name="username"]').val(username);
         $('input[name="password"]').val(password);
